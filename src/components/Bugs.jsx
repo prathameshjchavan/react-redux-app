@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { loadBugs } from "../store/bugs";
+import { getUnresolvedBugs, loadBugs, resolveBug } from "../store/bugs";
 import { connect } from "react-redux";
 
 class Bugs extends Component {
@@ -11,7 +11,10 @@ class Bugs extends Component {
 		return (
 			<ul>
 				{this.props.bugs.map(({ id, description }) => (
-					<li key={id}>{description}</li>
+					<li key={id}>
+						{description}{" "}
+						<button onClick={() => this.props.resolveBug(id)}>Resolve</button>
+					</li>
 				))}
 			</ul>
 		);
@@ -19,10 +22,11 @@ class Bugs extends Component {
 }
 
 const mapStateToProps = (state) => ({
-	bugs: state.entities.bugs.list,
+	bugs: getUnresolvedBugs(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
+	resolveBug: (id) => dispatch(resolveBug(id)),
 	loadBugs: () => dispatch(loadBugs()),
 });
 
